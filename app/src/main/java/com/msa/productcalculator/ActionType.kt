@@ -12,8 +12,8 @@ sealed class ActionType(val symbol: String, val buttonColor: Color) {
     object Clear : ActionType("AC", ButtonPink)
     object Decimal : ActionType(".", ButtonBlue)
     object Percentage: ActionType("%", ButtonPink)
-    object close: ActionType("X", ButtonPink)
-    object confirm: ActionType("true", ButtonPink)
+    object close: ActionType("X", ButtonRed)
+    object confirm: ActionType("true", ButtonGreen)
 }
 
 sealed class Operators(val symbol: String) {
