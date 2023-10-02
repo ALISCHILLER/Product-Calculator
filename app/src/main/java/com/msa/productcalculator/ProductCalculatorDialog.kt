@@ -25,6 +25,9 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +47,11 @@ import com.touchlane.gridpad.GridPadCells
 fun ProductCalculatorDialog(
 
 ) {
+
+
+    var numberProduct by remember {
+        mutableStateOf(String())
+    }
     Dialog(onDismissRequest = { /*TODO*/ }) {
         Box(
             contentAlignment = Alignment.Center,
@@ -67,14 +75,16 @@ fun ProductCalculatorDialog(
                         .padding(5.dp)
                         .padding(5.dp)
                 ) {
-                    InputDisplayComponent()
+                    InputDisplayComponent(numberProduct)
                     Spacer(modifier = Modifier.height(MaterialTheme.spacing.lg))
                     Row(
                         Modifier
                             .padding(5.dp)
                             .padding(5.dp)
                     ) {
-                        CalcButtonsGridLayout()
+                        CalcButtonsGridLayout(
+                            setNumber = {numberProduct=it}
+                        )
                     }
 
                 }
@@ -88,7 +98,10 @@ fun ProductCalculatorDialog(
 
 
 @Composable
-private fun CalcButtonsGridLayout() {
+private fun CalcButtonsGridLayout(
+    setNumber: (String) -> Unit,
+
+    ) {
     val buttons = listOf(
         ActionType.Number(7),
         ActionType.Number(8),
@@ -117,7 +130,7 @@ private fun CalcButtonsGridLayout() {
                     color = it.buttonColor,
                     symbol = it.symbol
                 ) {
-
+                    setNumber(it.symbol)
                 }
             }
         }

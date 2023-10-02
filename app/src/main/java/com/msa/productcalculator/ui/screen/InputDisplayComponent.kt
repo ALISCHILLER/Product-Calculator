@@ -1,6 +1,7 @@
 package com.msa.productcalculator.ui.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,10 +18,13 @@ import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.msa.productcalculator.UnitProductModel
 import com.msa.productcalculator.ui.theme.*
 
 @Composable
-internal fun InputDisplayComponent() {
+internal fun InputDisplayComponent(
+    number:String
+) {
     Box(
         Modifier
             .fillMaxWidth()
@@ -46,24 +50,39 @@ internal fun InputDisplayComponent() {
         Column(
 
         ) {
-            val buttons = listOf("KA", "EA")
+            val unit = listOf(
+                UnitProductModel("KA",true)
+                ,
+                UnitProductModel("EA",false)
+                )
             LazyRow(
                 Modifier
                     .padding(10.dp)
                     .padding(10.dp),
                 horizontalArrangement = Arrangement.spacedBy(25.dp),
             ) {
-                items(buttons) {
+                items(unit) {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(15.dp),
+                        modifier = Modifier
+                            .clickable {
+                                it.unitStutus=true
+                            }
+
+
                     ) {
                         Text(
-                            text = it,
+                            text = it.unitName,
                             color = Color.White
                         )
 
                         Text(
-                            text = "__",
+                            text =
+                                if (it.unitStutus)
+                                    number
+                                else
+                                    "--"
+                                    ,
                             color = Color.White
                         )
 
@@ -85,7 +104,7 @@ internal fun InputDisplayComponent() {
 @Composable
 fun InputDisplayComponentPreview() {
     Box(modifier = Modifier.padding(10.dp)) {
-        InputDisplayComponent()
+        InputDisplayComponent("12")
     }
 
 }
