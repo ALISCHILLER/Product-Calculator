@@ -36,8 +36,6 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ){
-
-
                         var hideDatePicker by remember {
                             mutableStateOf(true)
                         }

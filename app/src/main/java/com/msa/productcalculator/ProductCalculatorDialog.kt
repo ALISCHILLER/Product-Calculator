@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -34,6 +35,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.msa.productcalculator.model.StateModel
 import com.msa.productcalculator.ui.screen.CalcButtonComponent
 import com.msa.productcalculator.ui.screen.InputDisplayComponent
 import com.msa.productcalculator.ui.theme.*
@@ -47,11 +50,10 @@ import com.touchlane.gridpad.GridPadCells
 fun ProductCalculatorDialog(
 
 ) {
-
-
-    var numberProduct by remember {
-        mutableStateOf(String())
-    }
+    val viewModel= viewModel<CalculatorViewModel>()
+    val state =
+        viewModel.viewState.collectAsState(initial = CalculatorViewModel.ViewState("0","1"))
+            .value
     Dialog(onDismissRequest = { /*TODO*/ }) {
         Box(
             contentAlignment = Alignment.Center,
@@ -68,29 +70,43 @@ fun ProductCalculatorDialog(
                 shape = MaterialTheme.shapes.large,
                 tonalElevation = AlertDialogDefaults.TonalElevation,
             ) {
-                Column(
-                    modifier = Modifier
-                        .background(color = Color.Black)
-                        .animateContentSize()
-                        .padding(5.dp)
-                        .padding(5.dp)
-                ) {
-                    InputDisplayComponent(numberProduct)
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.lg))
-                    Row(
-                        Modifier
-                            .padding(5.dp)
-                            .padding(5.dp)
-                    ) {
-                        CalcButtonsGridLayout(
-                            setNumber = {numberProduct=it}
-                        )
-                    }
-
+                ProductCalculatorScreen(state){
+                    viewModel.dispatch(it)
                 }
             }
         }
+    }
 
+}
+
+
+
+
+@Composable
+private fun ProductCalculatorScreen(
+    state: CalculatorViewModel.ViewState,
+    dispatcher: (ActionType) -> Unit,
+){
+    Column(
+        modifier = Modifier
+            .background(color = Color.Black)
+            .animateContentSize()
+            .padding(5.dp)
+            .padding(5.dp)
+    ) {
+        InputDisplayComponent(state){
+
+        }
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.lg))
+        Row(
+            Modifier
+                .padding(5.dp)
+                .padding(5.dp)
+        ) {
+            CalcButtonsGridLayout(
+                dispatcher = {dispatcher}
+            )
+        }
 
     }
 
@@ -99,8 +115,7 @@ fun ProductCalculatorDialog(
 
 @Composable
 private fun CalcButtonsGridLayout(
-    setNumber: (String) -> Unit,
-
+    dispatcher: (ActionType) -> Unit
     ) {
     val buttons = listOf(
         ActionType.Number(7),
@@ -130,7 +145,7 @@ private fun CalcButtonsGridLayout(
                     color = it.buttonColor,
                     symbol = it.symbol
                 ) {
-                    setNumber(it.symbol)
+                    dispatcher(it)
                 }
             }
         }
