@@ -18,14 +18,13 @@ import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.msa.productcalculator.ActionType
 import com.msa.productcalculator.CalculatorViewModel
 import com.msa.productcalculator.model.UnitProductModel
 import com.msa.productcalculator.ui.theme.*
 
 @Composable
 internal fun InputDisplayComponent(
-    state: CalculatorViewModel.ViewState,
+    unit: CalculatorViewModel.ViewUnit,
     onClick: () -> Unit,
 ) {
     Box(
@@ -53,18 +52,14 @@ internal fun InputDisplayComponent(
         Column(
 
         ) {
-            val unit = listOf(
-                UnitProductModel("1","KA",true)
-                ,
-                UnitProductModel("2","EA",false)
-                )
+
             LazyRow(
                 Modifier
                     .padding(10.dp)
                     .padding(10.dp),
                 horizontalArrangement = Arrangement.spacedBy(25.dp),
             ) {
-                items(unit) {
+                items(unit.unitProduct) {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(15.dp),
                         modifier = Modifier
@@ -80,7 +75,7 @@ internal fun InputDisplayComponent(
                         )
 
                         Text(
-                            text = state.num,
+                            text = it.num,
                             color = Color.White
                         )
 
@@ -102,7 +97,17 @@ internal fun InputDisplayComponent(
 @Composable
 fun InputDisplayComponentPreview() {
     Box(modifier = Modifier.padding(10.dp)) {
-        InputDisplayComponent(CalculatorViewModel.ViewState("1","1")){
+
+        val unit = listOf(
+            UnitProductModel("1","KA",true)
+            ,
+            UnitProductModel("2","EA",false)
+        )
+        InputDisplayComponent(
+            CalculatorViewModel.ViewState("1","1"),
+            CalculatorViewModel.ViewUnit(unit),
+
+            ){
 
         }
     }

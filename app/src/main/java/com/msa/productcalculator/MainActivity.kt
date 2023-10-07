@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.msa.productcalculator.model.UnitProductModel
 import com.msa.productcalculator.ui.theme.ProductCalculatorTheme
 
 class MainActivity : ComponentActivity() {
@@ -31,7 +32,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.White
                 ) {
-
+                    val unit = listOf(
+                        UnitProductModel("1","KA",true)
+                        ,
+                        UnitProductModel("2","EA",false)
+                    )
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
@@ -45,7 +50,7 @@ class MainActivity : ComponentActivity() {
                             Text("کالا")
                         }
                         if (!hideDatePicker)
-                            ProductCalculatorDialog()
+                            ProductCalculatorDialog(unit=unit)
                     }
                 }
             }
@@ -59,6 +64,11 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     ProductCalculatorTheme {
-        ProductCalculatorDialog()
+        val unit = listOf(
+            UnitProductModel("1","KA",true)
+            ,
+            UnitProductModel("2","EA",false)
+        )
+        ProductCalculatorDialog(unit)
     }
 }

@@ -2,7 +2,6 @@ package com.msa.productcalculator
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,25 +9,19 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,23 +30,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.msa.productcalculator.model.StateModel
+import com.msa.productcalculator.model.UnitProductModel
 import com.msa.productcalculator.ui.screen.CalcButtonComponent
 import com.msa.productcalculator.ui.screen.InputDisplayComponent
-import com.msa.productcalculator.ui.theme.*
 import com.msa.productcalculator.ui.theme.spacing
-import com.touchlane.gridpad.GridPad
-import com.touchlane.gridpad.GridPadCellSize
-import com.touchlane.gridpad.GridPadCells
 
 
 @Composable
 fun ProductCalculatorDialog(
-
+    unit:List<UnitProductModel>
 ) {
     val viewModel= viewModel<CalculatorViewModel>()
+
+//    var unitProduct = remember { mutableStateListOf<UnitProductModel>()}
+//    unitProduct= unit as SnapshotStateList<UnitProductModel>
+
+
     val state =
         viewModel.viewState.collectAsState(initial = CalculatorViewModel.ViewState("0","1"))
             .value
+
+    val untiProduct =
+        viewModel.viewUnit.collectAsState(initial = CalculatorViewModel.ViewUnit(unit))
+            .value
+
+
+
     Dialog(onDismissRequest = { /*TODO*/ }) {
         Box(
             contentAlignment = Alignment.Center,
@@ -70,7 +72,7 @@ fun ProductCalculatorDialog(
                 shape = MaterialTheme.shapes.large,
                 tonalElevation = AlertDialogDefaults.TonalElevation,
             ) {
-                ProductCalculatorScreen(state){
+                ProductCalculatorScreen(untiProduct){
                     viewModel.dispatch(it)
                 }
             }
@@ -84,8 +86,9 @@ fun ProductCalculatorDialog(
 
 @Composable
 private fun ProductCalculatorScreen(
-    state: CalculatorViewModel.ViewState,
-    dispatcher: (ActionType) -> Unit,
+    unti: CalculatorViewModel.ViewUnit,
+    dispatcher: (StateModel) -> Unit,
+
 ){
     Column(
         modifier = Modifier
@@ -94,7 +97,7 @@ private fun ProductCalculatorScreen(
             .padding(5.dp)
             .padding(5.dp)
     ) {
-        InputDisplayComponent(state){
+        InputDisplayComponent(unti){
 
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.lg))
@@ -159,6 +162,11 @@ private fun CalcButtonsGridLayout(
 fun ProductCalculatorDialogPreview(
 
 ) {
-    ProductCalculatorDialog()
+    val unit = listOf(
+        UnitProductModel("1","KA",true)
+        ,
+        UnitProductModel("2","EA",false)
+    )
+    ProductCalculatorDialog(unit)
 
 }
